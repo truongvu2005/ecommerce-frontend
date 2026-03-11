@@ -80,7 +80,7 @@ export default function LoginPage() {
         </form>
 
         <p className="mt-6 text-center text-gray-600">
-          Chưa có tài khoản? <Link href="#" className="text-blue-500 hover:underline font-bold">Đăng ký</Link>
+          Chưa có tài khoản? <Link href="/register" className="text-blue-500 hover:underline font-bold">Đăng ký</Link>
         </p>
       </div>
     </div>
