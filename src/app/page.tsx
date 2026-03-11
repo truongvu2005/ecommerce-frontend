@@ -110,9 +110,19 @@ export default function Home() {
           {products.map((product: any) => (
             <div key={product.id} className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-2xl transition duration-300 flex flex-col justify-between">
               <div>
-                <div className="w-full h-40 bg-gray-100 rounded-xl mb-4 flex items-center justify-center text-gray-400 text-sm">
-                  [Ảnh {product.name}]
-                </div>
+                <div className="h-48 overflow-hidden rounded-t-xl bg-gray-100">
+                  {product.image_url ? (
+                    <img 
+                      src={product.image_url} 
+                      alt={product.name} 
+                      className="w-full h-full object-cover transition-transform duration-300 hover:scale-110"
+                    />
+                  ) : (
+                    <div className="flex items-center justify-center h-full text-gray-400">
+                      Không có ảnh
+                    </div>
+                  )}
+                </div>  
                 <h2 className="text-lg font-bold mb-2 text-gray-800 line-clamp-2 h-14">{product.name}</h2>
               </div>
               
