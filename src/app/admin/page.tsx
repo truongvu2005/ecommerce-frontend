@@ -94,61 +94,74 @@ export default function AdminPage() {
         {/* --- DANH SÁCH ĐƠN HÀNG (GIỮ NGUYÊN) --- */}
         <div className="bg-white text-slate-800 rounded-2xl shadow-2xl overflow-hidden">
           <table className="w-full text-left border-collapse">
-             {/* ... Code bảng đơn hàng cũ của bạn ... */}
-             <thead>
-                <tr className="bg-slate-100 uppercase text-sm font-bold text-slate-500">
-                  <th className="p-5">Mã đơn</th>
-                  <th className="p-5">Khách hàng</th>
-                  <th className="p-5 text-right">Tổng tiền</th>
-                  <th className="p-5 text-center">Trạng thái</th>
-                </tr>
-             </thead>
-             <tbody>
-                {orders.map((order: any) => (
-                  <tr key={order.id} className="border-b hover:bg-slate-50">
-                    <td className="p-5 font-mono text-xs">{order.id.substring(0, 8)}...</td>
-                    <td className="p-5 font-bold">{order.full_name}</td>
-                    <td className="p-5 text-right font-black text-red-500">{Number(order.total_amount).toLocaleString()} đ</td>
-                    <td className="p-5 text-center">
-                      <div className="flex flex-col gap-2">
-                        {/* Nhãn hiển thị trạng thái hiện tại */}
-                        <span className={`px-3 py-1 rounded-full font-bold text-xs uppercase w-fit mx-auto ${
-                          order.status === 'COMPLETED' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'
-                        }`}>
-                          {order.status}
-                        </span>
+            <thead>
+              <tr className="bg-slate-100 uppercase text-sm font-bold text-slate-500">
+                <th className="p-5">Mã đơn</th>
+                <th className="p-5">Khách hàng</th>
+                <th className="p-5 text-right">Tổng tiền</th>
+                <th className="p-5 text-center">Ngày đặt</th>
+                <th className="p-5 text-center">Hành động & Trạng thái</th>
+              </tr>
+            </thead>
+            <tbody>
+              {orders.map((order: any) => (
+                <tr key={order.id} className="border-b hover:bg-slate-50 transition-colors">
+                  <td className="p-5 font-mono text-xs text-slate-400">
+                    {order.id.substring(0, 8)}...
+                  </td>
+                  <td className="p-5">
+                    <p className="font-bold text-slate-800">{order.full_name}</p>
+                    <p className="text-xs text-slate-400">{order.email}</p>
+                  </td>
+                  <td className="p-5 text-right font-black text-red-500">
+                    {Number(order.total_amount).toLocaleString('vi-VN')} đ
+                  </td>
+                  <td className="p-5 text-center text-slate-500 text-sm">
+                    {new Date(order.created_at).toLocaleDateString('vi-VN')}
+                  </td>
+                  <td className="p-5">
+                    <div className="flex flex-col items-center gap-2">
+                      {/* Badge hiển thị trạng thái hiện tại */}
+                      <span className={`px-3 py-1 rounded-full font-bold text-[10px] uppercase shadow-sm ${
+                        order.status === 'COMPLETED' ? 'bg-green-100 text-green-700' : 
+                        order.status === 'SHIPPED' ? 'bg-blue-100 text-blue-700' :
+                        order.status === 'CANCELLED' ? 'bg-red-100 text-red-700' :
+                        'bg-yellow-100 text-yellow-700'
+                      }`}>
+                        {order.status}
+                      </span>
 
-                        {/* Ô chọn để cập nhật trạng thái mới */}
-                        <select 
-                          className="text-xs p-2 border rounded bg-white font-semibold outline-none focus:ring-2 focus:ring-blue-400"
-                          value={order.status}
-                          onChange={async (e) => {
-                            const newStatus = e.target.value;
-                            try {
-                              const res = await fetch(`https://vutech-api.onrender.com/v1/admin/orders/${order.id}/status`, {
-                                method: 'PUT',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({ status: newStatus })
-                              });
-                              if (res.ok) {
-                                alert('✅ Đã cập nhật trạng thái!');
-                                window.location.reload(); // Load lại để thấy thay đổi
-                              }
-                            } catch (err) {
-                              alert('❌ Lỗi cập nhật!');
+                      {/* Ô chọn để cập nhật (giữ nguyên logic fetch của bạn) */}
+                      <select 
+                        className="text-xs p-2 border rounded-lg bg-white font-semibold outline-none focus:ring-2 focus:ring-blue-400 cursor-pointer shadow-sm"
+                        value={order.status}
+                        onChange={async (e) => {
+                          const newStatus = e.target.value;
+                          try {
+                            const res = await fetch(`https://vutech-api.onrender.com/v1/admin/orders/${order.id}/status`, {
+                              method: 'PUT',
+                              headers: { 'Content-Type': 'application/json' },
+                              body: JSON.stringify({ status: newStatus })
+                            });
+                            if (res.ok) {
+                              alert('✅ Đã cập nhật trạng thái đơn hàng!');
+                              window.location.reload(); 
                             }
-                          }}
-                        >
-                          <option value="PENDING">Chờ xử lý (PENDING)</option>
-                          <option value="SHIPPED">Đang giao (SHIPPED)</option>
-                          <option value="COMPLETED">Hoàn thành (COMPLETED)</option>
-                          <option value="CANCELLED">Hủy bỏ (CANCELLED)</option>
-                        </select>
-                      </div>
-                    </td>         
-                  </tr>
-                ))}
-             </tbody>
+                          } catch (err) {
+                            alert('❌ Lỗi kết nối server!');
+                          }
+                        }}
+                      >
+                        <option value="PENDING">Đang chờ (PENDING)</option>
+                        <option value="SHIPPED">Đang giao (SHIPPED)</option>
+                        <option value="COMPLETED">Hoàn thành (COMPLETED)</option>
+                        <option value="CANCELLED">Hủy đơn (CANCELLED)</option>
+                      </select>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
           </table>
         </div>
       </div>
