@@ -13,7 +13,7 @@ export default function CartPage() {
 
   // Tách hàm load giỏ hàng ra và nhận vào userId động
   const loadCart = (userId: string) => {
-    fetch(`http://localhost:3000/v1/cart/${userId}`)
+    fetch(`https://vutech-api.onrender.com/v1/cart/${userId}`)
       .then((res) => res.json())
       .then((data) => {
         setCart(data);
@@ -46,7 +46,7 @@ export default function CartPage() {
     if (!confirm('Bạn có chắc muốn bỏ sản phẩm này khỏi giỏ?')) return;
 
     try {
-      const res = await fetch(`http://localhost:3000/v1/cart/${cart.cartId}/product/${productId}`, {
+      const res = await fetch(`https://vutech-api.onrender.com/v1/cart/${cart.cartId}/product/${productId}`, {
         method: 'DELETE'
       });
       if (res.ok) {
@@ -64,7 +64,7 @@ export default function CartPage() {
     setIsCheckingOut(true);
 
     try {
-      const response = await fetch('http://localhost:3000/v1/checkout', {
+      const response = await fetch('https://vutech-api.onrender.com/v1/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

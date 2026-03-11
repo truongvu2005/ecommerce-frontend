@@ -8,7 +8,7 @@ export default function AdminPage() {
 
   // Gọi API lấy TẤT CẢ đơn hàng khi vừa vào trang
   const fetchOrders = () => {
-    fetch('http://localhost:3000/v1/admin/orders')
+    fetch('https://vutech-api.onrender.com/v1/admin/orders')
       .then(res => res.json())
       .then(data => {
         setOrders(data);
@@ -24,7 +24,7 @@ export default function AdminPage() {
   // Hàm gọi API cập nhật trạng thái
   const handleUpdateStatus = async (orderId: string, newStatus: string) => {
     try {
-      const response = await fetch(`http://localhost:3000/v1/admin/orders/${orderId}/status`, {
+      const response = await fetch(`https://vutech-api.onrender.com/v1/admin/orders/${orderId}/status`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: newStatus }),

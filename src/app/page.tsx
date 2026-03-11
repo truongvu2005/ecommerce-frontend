@@ -14,7 +14,7 @@ export default function Home() {
 
   useEffect(() => {
     // 1. Lấy danh sách sản phẩm
-    fetch('http://localhost:3000/v1/products')
+    fetch('https://vutech-api.onrender.com/v1/products')
       .then(res => res.json())
       .then(data => {
         setProducts(data);
@@ -50,7 +50,7 @@ export default function Home() {
 
     setStatus('Đang thêm...');
     try {
-      const response = await fetch('http://localhost:3000/v1/cart/items', {
+      const response = await fetch('https://vutech-api.onrender.com/v1/cart/items', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

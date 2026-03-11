@@ -20,7 +20,7 @@ export default function OrdersPage() {
     // 2. Lấy ID thật gọi API
     const user = JSON.parse(userStr);
     
-    fetch(`http://localhost:3000/v1/orders/${user.id}`)
+    fetch(`https://vutech-api.onrender.com/v1/orders/${user.id}`)
       .then(res => res.json())
       .then(data => {
         setOrders(data);
