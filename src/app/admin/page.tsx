@@ -110,8 +110,42 @@ export default function AdminPage() {
                     <td className="p-5 font-bold">{order.full_name}</td>
                     <td className="p-5 text-right font-black text-red-500">{Number(order.total_amount).toLocaleString()} đ</td>
                     <td className="p-5 text-center">
-                      <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full font-bold text-xs uppercase">{order.status}</span>
-                    </td>
+                      <div className="flex flex-col gap-2">
+                        {/* Nhãn hiển thị trạng thái hiện tại */}
+                        <span className={`px-3 py-1 rounded-full font-bold text-xs uppercase w-fit mx-auto ${
+                          order.status === 'COMPLETED' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'
+                        }`}>
+                          {order.status}
+                        </span>
+
+                        {/* Ô chọn để cập nhật trạng thái mới */}
+                        <select 
+                          className="text-xs p-2 border rounded bg-white font-semibold outline-none focus:ring-2 focus:ring-blue-400"
+                          value={order.status}
+                          onChange={async (e) => {
+                            const newStatus = e.target.value;
+                            try {
+                              const res = await fetch(`https://vutech-api.onrender.com/v1/admin/orders/${order.id}/status`, {
+                                method: 'PUT',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ status: newStatus })
+                              });
+                              if (res.ok) {
+                                alert('✅ Đã cập nhật trạng thái!');
+                                window.location.reload(); // Load lại để thấy thay đổi
+                              }
+                            } catch (err) {
+                              alert('❌ Lỗi cập nhật!');
+                            }
+                          }}
+                        >
+                          <option value="PENDING">Chờ xử lý (PENDING)</option>
+                          <option value="SHIPPED">Đang giao (SHIPPED)</option>
+                          <option value="COMPLETED">Hoàn thành (COMPLETED)</option>
+                          <option value="CANCELLED">Hủy bỏ (CANCELLED)</option>
+                        </select>
+                      </div>
+                    </td>         
                   </tr>
                 ))}
              </tbody>
