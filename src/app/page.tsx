@@ -108,14 +108,16 @@ export default function Home() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {products.map((product: any) => (
-            <div key={product.id} className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-2xl transition duration-300 flex flex-col justify-between">
-              <div>
-                <div className="h-48 overflow-hidden rounded-t-xl bg-gray-100">
+            <div key={product.id} className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-2xl transition duration-300 flex flex-col justify-between group">
+              
+              {/* Bọc Link quanh Ảnh và Tên để khách dễ bấm */}
+              <Link href={`/product/${product.id}`} className="cursor-pointer">
+                <div className="h-48 overflow-hidden rounded-t-xl bg-gray-100 mb-4">
                   {product.image_url ? (
                     <img 
                       src={product.image_url} 
                       alt={product.name} 
-                      className="w-full h-full object-cover transition-transform duration-300 hover:scale-110"
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                     />
                   ) : (
                     <div className="flex items-center justify-center h-full text-gray-400">
@@ -123,11 +125,15 @@ export default function Home() {
                     </div>
                   )}
                 </div>  
-                <h2 className="text-lg font-bold mb-2 text-gray-800 line-clamp-2 h-14">{product.name}</h2>
-              </div>
+                <h2 className="text-lg font-bold mb-2 text-gray-800 line-clamp-2 h-14 group-hover:text-blue-600 transition-colors">
+                  {product.name}
+                </h2>
+              </Link>
               
               <div>
-                <p className="text-2xl text-red-500 font-black mb-4">{Number(product.price).toLocaleString('vi-VN')} đ</p>
+                <p className="text-2xl text-red-500 font-black mb-4">
+                  {Number(product.price).toLocaleString('vi-VN')} đ
+                </p>
                 <button 
                   onClick={() => handleAddToCart(product.id)}
                   className="w-full bg-blue-50 text-blue-600 border-2 border-blue-600 px-4 py-3 rounded-xl hover:bg-blue-600 hover:text-white font-bold transition-colors active:scale-95"
@@ -136,7 +142,7 @@ export default function Home() {
                 </button>
               </div>
             </div>
-          ))}
+          ))}                                                   
         </div>
 
         {currentUser && (
