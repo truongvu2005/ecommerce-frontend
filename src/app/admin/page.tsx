@@ -3,13 +3,14 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
 export default function AdminPage() {
+  // 1. TOÀN BỘ HOOKS PHẢI NẰM Ở TRÊN CÙNG
+  const router = useRouter();
+  const [isAdmin, setIsAdmin] = useState(false);
   const [orders, setOrders] = useState([]);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const router = useRouter();
-
-  const [isAdmin, setIsAdmin] = useState(false);
-  // State cho Form Sản phẩm (Dùng chung cho cả Thêm và Sửa)
+  
+  // State cho Form Sản phẩm
   const [editingId, setEditingId] = useState<string | null>(null);
   const [name, setName] = useState('');
   const [price, setPrice] = useState('');
@@ -18,27 +19,25 @@ export default function AdminPage() {
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
 
+  // 2. USE EFFECT KIỂM TRA QUYỀN
   useEffect(() => {
-    // Kiểm tra thẻ ngành
     const userStr = localStorage.getItem('user');
     if (userStr) {
       const user = JSON.parse(userStr);
       if (user.role === 'admin') {
         setIsAdmin(true);
-        fetchData(); // Cho phép lấy dữ liệu Admin
+        fetchData(); // Chỉ tải dữ liệu nếu đúng là admin
       } else {
         alert('⛔ CẢNH BÁO: Bạn không có quyền truy cập khu vực quản trị!');
-        router.push('/'); // Đuổi về trang chủ
+        router.push('/');
       }
     } else {
-      alert('Vui lòng đăng nhập trước!');
+      alert('Vui lòng đăng nhập để tiếp tục!');
       router.push('/login');
     }
-  }, []);
+  }, [router]);
 
-  // Nếu chưa xác nhận được là Admin thì không hiện gì cả (tránh bị lộ giao diện 1 giây)
-  if (!isAdmin) return <div className="min-h-screen bg-slate-900 flex justify-center items-center text-white text-2xl font-bold">Đang kiểm tra quyền truy cập... 🛡️</div>;
-
+  // 3. CÁC HÀM LOGIC
   const fetchData = async () => {
     try {
       const [ordersRes, productsRes] = await Promise.all([
@@ -54,14 +53,12 @@ export default function AdminPage() {
     }
   };
 
-  // --- HÀM XỬ LÝ LƯU (THÊM HOẶC SỬA) ---
   const handleSaveProduct = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsUploading(true);
 
     try {
       let finalImageUrl = imageUrl;
-
       if (imageFile) {
         const formData = new FormData();
         formData.append('image', imageFile);
@@ -88,9 +85,8 @@ export default function AdminPage() {
         resetForm();
         fetchData(); 
       } else {
-        // Đọc lỗi chi tiết từ Backend trả về
-        const errorData = await productRes.json(); 
-        alert(`❌ Lỗi từ server: ${errorData.error}`);
+        const errData = await productRes.json();
+        alert(`❌ Lỗi từ server: ${errData.error}`);
       }
     } catch (error) {
       alert('❌ Lỗi kết nối!');
@@ -126,8 +122,11 @@ export default function AdminPage() {
     setEditingId(null); setName(''); setPrice(''); setSku(''); setImageUrl(''); setImageFile(null);
   };
 
-  if (loading) return <div className="p-10 text-center font-bold text-white text-2xl">Đang tải dữ liệu hệ thống... ⏳</div>;
+  // 4. KIỂM TRA ĐIỀU KIỆN HIỂN THỊ (Sớm nhất là ở đây, sau khi đã khai báo xong xuôi Hooks)
+  if (!isAdmin) return <div className="min-h-screen bg-slate-900 flex justify-center items-center text-white text-2xl font-bold">Đang kiểm tra quyền truy cập... 🛡️</div>;
+  if (loading) return <div className="p-10 text-center font-bold text-white text-2xl bg-slate-900 min-h-screen">Đang tải dữ liệu hệ thống... ⏳</div>;
 
+  // 5. GIAO DIỆN CHÍNH
   return (
     <div className="min-h-screen bg-slate-900 p-8 text-white font-sans">
       <div className="max-w-7xl mx-auto flex flex-col gap-12">
@@ -212,7 +211,7 @@ export default function AdminPage() {
           </div>
         </div>
 
-        {/* --- BẢNG QUẢN LÝ ĐƠN HÀNG (FULL 5 CỘT NHƯ CŨ) --- */}
+        {/* --- BẢNG QUẢN LÝ ĐƠN HÀNG --- */}
         <div className="bg-white text-slate-800 rounded-2xl shadow-2xl overflow-hidden mb-10">
           <div className="p-6 bg-slate-100 border-b">
             <h3 className="font-black text-xl text-slate-700">📦 DANH SÁCH ĐƠN HÀNG</h3>
@@ -246,7 +245,6 @@ export default function AdminPage() {
                     </td>
                     <td className="p-5">
                       <div className="flex flex-col items-center gap-2">
-                        {/* Nhãn trạng thái */}
                         <span className={`px-3 py-1 rounded-full font-bold text-[10px] uppercase shadow-sm w-fit ${
                           order.status === 'COMPLETED' ? 'bg-green-100 text-green-700' : 
                           order.status === 'SHIPPED' ? 'bg-blue-100 text-blue-700' :
@@ -255,8 +253,6 @@ export default function AdminPage() {
                         }`}>
                           {order.status}
                         </span>
-
-                        {/* Ô select đổi trạng thái */}
                         <select 
                           className="text-xs p-2 border rounded-lg bg-white font-semibold outline-none focus:ring-2 focus:ring-blue-400 cursor-pointer shadow-sm"
                           value={order.status}
@@ -270,7 +266,7 @@ export default function AdminPage() {
                               });
                               if (res.ok) {
                                 alert('✅ Đã cập nhật trạng thái đơn hàng!');
-                                fetchData(); // Fetch lại thay vì reload trang
+                                fetchData(); 
                               }
                             } catch (err) {
                               alert('❌ Lỗi kết nối server!');
