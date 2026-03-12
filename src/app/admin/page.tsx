@@ -68,7 +68,9 @@ export default function AdminPage() {
         resetForm();
         fetchData(); 
       } else {
-        alert('❌ Lỗi xử lý từ server!');
+        // Đọc lỗi chi tiết từ Backend trả về
+        const errorData = await productRes.json(); 
+        alert(`❌ Lỗi từ server: ${errorData.error}`);
       }
     } catch (error) {
       alert('❌ Lỗi kết nối!');
