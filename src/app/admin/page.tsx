@@ -1,11 +1,14 @@
 'use client';
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function AdminPage() {
   const [orders, setOrders] = useState([]);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  
+  const router = useRouter();
+
+  const [isAdmin, setIsAdmin] = useState(false);
   // State cho Form Sản phẩm (Dùng chung cho cả Thêm và Sửa)
   const [editingId, setEditingId] = useState<string | null>(null);
   const [name, setName] = useState('');
@@ -16,8 +19,25 @@ export default function AdminPage() {
   const [isUploading, setIsUploading] = useState(false);
 
   useEffect(() => {
-    fetchData();
+    // Kiểm tra thẻ ngành
+    const userStr = localStorage.getItem('user');
+    if (userStr) {
+      const user = JSON.parse(userStr);
+      if (user.role === 'admin') {
+        setIsAdmin(true);
+        fetchData(); // Cho phép lấy dữ liệu Admin
+      } else {
+        alert('⛔ CẢNH BÁO: Bạn không có quyền truy cập khu vực quản trị!');
+        router.push('/'); // Đuổi về trang chủ
+      }
+    } else {
+      alert('Vui lòng đăng nhập trước!');
+      router.push('/login');
+    }
   }, []);
+
+  // Nếu chưa xác nhận được là Admin thì không hiện gì cả (tránh bị lộ giao diện 1 giây)
+  if (!isAdmin) return <div className="min-h-screen bg-slate-900 flex justify-center items-center text-white text-2xl font-bold">Đang kiểm tra quyền truy cập... 🛡️</div>;
 
   const fetchData = async () => {
     try {

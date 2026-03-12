@@ -85,6 +85,15 @@ export default function Home() {
             {currentUser ? (
               <>
                 <span className="font-bold text-gray-700">Chào, {currentUser.full_name} 👋</span>
+                
+                {/* --- CHỈ ADMIN MỚI THẤY NÚT NÀY --- */}
+                {currentUser.role === 'admin' && (
+                  <Link href="/admin" className="bg-purple-600 text-white px-4 py-2 rounded-lg font-bold hover:bg-purple-700 shadow-md transition">
+                    ⚙️ Quản trị Shop
+                  </Link>
+                )}
+
+                <button onClick={handleLogout} className="text-red-500 font-bold hover:underline"></button>
                 <button onClick={handleLogout} className="text-red-500 font-bold hover:underline">
                   Đăng xuất
                 </button>
