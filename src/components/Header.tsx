@@ -45,7 +45,7 @@ export default function Header() {
 
           <div className="hidden lg:flex items-center gap-8 font-bold text-slate-600">
             <Link href="/" className="hover:text-blue-600 transition">Trang chủ</Link>
-            <Link href="#" className="hover:text-blue-600 transition">Sản phẩm</Link>
+            <Link href="/products" className="hover:text-blue-600 transition">Sản phẩm</Link>
             <Link href="/about" className="hover:text-blue-600 transition">Giới thiệu</Link>
           </div>
         </div>
