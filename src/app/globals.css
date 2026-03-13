@@ -1,4 +1,13 @@
 @import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Ép toàn bộ web luôn dùng nền xám sáng siêu đẹp và bỏ chế độ Dark Mode mặc định */
+body {
+  background-color: #f8fafc; 
+  color: #0f172a; 
+}
 
 :root {
   --background: #ffffff;

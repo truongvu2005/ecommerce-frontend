@@ -127,11 +127,11 @@ function HomeContent() {
         </div>
       )}
 
-      {currentUser && (
+      {/* {currentUser && (
         <div className="mt-16 text-center">
           <Link href="/orders" className="text-slate-500 hover:text-blue-600 font-bold underline text-lg transition-colors">📦 Xem chi tiết lịch sử đơn hàng của tôi</Link>
         </div>
-      )}
+      )} */}
     </main>
   );
 }
