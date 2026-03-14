@@ -57,16 +57,34 @@ export default function Header() {
         <div className="hidden md:flex items-center gap-6">
           
           {/* THANH TÌM KIẾM CHO PC */}
-          <form onSubmit={handleSearch} className="relative">
+          {/* THANH TÌM KIẾM CHO PC - DÙNG ONKEYDOWN */}
+          <div className="relative">
             <input 
               type="text" 
               placeholder="Bạn muốn tìm mua gì?" 
               value={keyword}
               onChange={(e) => setKeyword(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && keyword.trim()) {
+                  e.preventDefault();
+                  router.push(`/products?search=${encodeURIComponent(keyword)}`);
+                  setKeyword('');
+                }
+              }}
               className="bg-slate-50 border border-transparent focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10 px-5 py-2.5 rounded-full text-sm w-64 transition-all outline-none" 
             />
-            <button type="submit" className="absolute right-3 top-2.5 text-slate-400 hover:text-blue-600">🔍</button>
-          </form>
+            <button 
+              onClick={() => {
+                if (keyword.trim()) {
+                  router.push(`/products?search=${encodeURIComponent(keyword)}`);
+                  setKeyword('');
+                }
+              }} 
+              className="absolute right-3 top-2.5 text-slate-400 hover:text-blue-600"
+            >
+              🔍
+            </button>
+          </div>
 
           {currentUser ? (
             <div className="flex items-center gap-4 border-l pl-6">
@@ -97,17 +115,24 @@ export default function Header() {
         <div className="md:hidden bg-white border-t border-gray-100 px-6 py-4 space-y-4 shadow-xl absolute w-full left-0 animate-fade-in">
           
           {/* THANH TÌM KIẾM CHO ĐIỆN THOẠI */}
-          <form onSubmit={handleSearch}>
+          {/* THANH TÌM KIẾM CHO ĐIỆN THOẠI - DÙNG ONKEYDOWN */}
+          <div className="relative">
             <input 
               type="text" 
               placeholder="Tìm kiếm sản phẩm..." 
               value={keyword}
               onChange={(e) => setKeyword(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && keyword.trim()) {
+                  e.preventDefault();
+                  router.push(`/products?search=${encodeURIComponent(keyword)}`);
+                  setIsMobileMenuOpen(false);
+                  setKeyword('');
+                }
+              }}
               className="w-full bg-slate-50 border px-4 py-3 rounded-xl outline-none focus:ring-2 focus:ring-blue-500" 
             />
-            {/* Ẩn nút submit đi, khách bấm Enter (hoặc nút Go trên bàn phím ảo) là tự chạy */}
-            <button type="submit" className="hidden">Tìm</button>
-          </form>
+          </div>
           
           <nav className="flex flex-col gap-4 font-semibold text-slate-600">
             <Link href="/" onClick={() => setIsMobileMenuOpen(false)}>Trang chủ</Link>
