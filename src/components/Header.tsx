@@ -62,7 +62,7 @@ export default function Header() {
                 Xin chào, <br/><span className="font-bold text-slate-800">{currentUser.full_name}</span>
               </div>
               
-              {currentUser.role === 'ADMIN' && (
+              {(currentUser.role === 'ADMIN' || currentUser.role === 'admin') && (
                 <Link href="/admin" className="text-purple-600 bg-purple-50 px-3 py-1.5 rounded-lg text-sm font-bold flex items-center gap-1 hover:bg-purple-100 transition">
                   ⚙️ Admin
                 </Link>
