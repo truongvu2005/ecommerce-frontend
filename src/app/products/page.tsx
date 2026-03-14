@@ -1,10 +1,11 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import toast from 'react-hot-toast';
 
-export default function ProductsPage() {
+// --- TÁCH LOGIC RA MỘT COMPONENT CON ĐỂ BỌC SUSPENSE ---
+function ProductsContent() {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -16,7 +17,7 @@ export default function ProductsPage() {
   const [currentUser, setCurrentUser] = useState<any>(null);
   const router = useRouter();
 
-  // --- VŨ KHÍ MỚI: BẮT TỪ KHÓA TỪ URL ---
+  // Bắt từ khóa từ URL
   const searchParams = useSearchParams();
   const searchQuery = searchParams.get('search') || '';
 
@@ -30,13 +31,13 @@ export default function ProductsPage() {
       .catch(err => console.error('Lỗi load danh mục:', err));
   }, []);
 
-  // --- NÂNG CẤP: GỌI API CÓ KÈM TỪ KHÓA TÌM KIẾM ---
+  // Gọi API lấy sản phẩm (Có kèm từ khóa)
   useEffect(() => {
     setLoading(true);
     let url = `https://vutech-api.onrender.com/v1/products?page=${currentPage}&limit=8`;
     
     if (selectedCategory) url += `&category=${selectedCategory}`;
-    if (searchQuery) url += `&search=${encodeURIComponent(searchQuery)}`; // Nối từ khóa vào API
+    if (searchQuery) url += `&search=${encodeURIComponent(searchQuery)}`; 
 
     fetch(url)
       .then(res => res.json())
@@ -49,7 +50,7 @@ export default function ProductsPage() {
         console.error(err);
         setLoading(false);
       });
-  }, [currentPage, selectedCategory, searchQuery]); // Cập nhật lại mỗi khi từ khóa thay đổi
+  }, [currentPage, selectedCategory, searchQuery]); 
 
   const handleAddToCart = async (productId: string) => {
     if (!currentUser) {
@@ -83,9 +84,8 @@ export default function ProductsPage() {
   };
 
   return (
-    <main className="max-w-7xl mx-auto px-6 py-10 w-full animate-fade-in flex flex-col md:flex-row gap-8">
-
-      {/* --- CỘT BÊN TRÁI: DANH MỤC LỌC --- */}
+    <div className="flex flex-col md:flex-row gap-8 w-full">
+      {/* CỘT BÊN TRÁI: DANH MỤC */}
       <div className="w-full md:w-64 flex-shrink-0">
         <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 sticky top-28">
           <h2 className="text-xl font-black text-slate-800 mb-4 flex items-center gap-2">🗂️ Danh mục</h2>
@@ -109,7 +109,7 @@ export default function ProductsPage() {
         </div>
       </div>
 
-      {/* --- CỘT BÊN PHẢI: LƯỚI SẢN PHẨM --- */}
+      {/* CỘT BÊN PHẢI: LƯỚI SẢN PHẨM */}
       <div className="flex-1">
         <div className="mb-6 flex justify-between items-end">
           <h1 className="text-3xl font-black text-slate-800">
@@ -142,7 +142,7 @@ export default function ProductsPage() {
               ))}                                         
             </div>
 
-            {/* BỘ NÚT PHÂN TRANG */}
+            {/* PHÂN TRANG */}
             {totalPages > 1 && (
               <div className="mt-12 flex justify-center items-center gap-2">
                 <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1} className="px-4 py-2 rounded-xl font-bold bg-white border text-slate-600 disabled:opacity-50 hover:bg-slate-50">&lt; Trước</button>
@@ -160,6 +160,17 @@ export default function ProductsPage() {
           </div>
         )}
       </div>
+    </div>
+  );
+}
+
+// --- TRANG CHÍNH BỌC SUSPENSE BẢO VỆ ---
+export default function ProductsPage() {
+  return (
+    <main className="max-w-7xl mx-auto px-6 py-10 w-full animate-fade-in flex flex-col md:flex-row gap-8">
+      <Suspense fallback={<div className="w-full text-center py-20 font-bold text-slate-500">Đang tải dữ liệu... ⏳</div>}>
+        <ProductsContent />
+      </Suspense>
     </main>
   );
 }
