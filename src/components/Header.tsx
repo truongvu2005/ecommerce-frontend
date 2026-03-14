@@ -6,9 +6,7 @@ import { useRouter } from 'next/navigation';
 export default function Header() {
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  
-  // 1. Thêm State lưu từ khóa tìm kiếm
-  const [keyword, setKeyword] = useState(''); 
+  const [keyword, setKeyword] = useState(''); // State lưu từ khóa
   const router = useRouter();
 
   useEffect(() => {
@@ -25,12 +23,13 @@ export default function Header() {
     router.push('/login');
   };
 
-  // 2. Hàm xử lý khi người dùng bấm Enter hoặc nút Kính lúp
+  // Hàm xử lý tìm kiếm khi gõ Enter
   const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault(); // Ngăn trình duyệt load lại trang
     if (keyword.trim()) {
       router.push(`/products?search=${encodeURIComponent(keyword)}`);
-      setIsMobileMenuOpen(false); // Đóng menu mobile nếu đang mở
+      setIsMobileMenuOpen(false); // Đóng menu nếu đang ở mobile
+      setKeyword(''); // Xóa chữ trong ô nhập sau khi tìm
     }
   };
 
@@ -57,7 +56,7 @@ export default function Header() {
 
         <div className="hidden md:flex items-center gap-6">
           
-          {/* 3. Bọc Form cho thanh tìm kiếm PC */}
+          {/* THANH TÌM KIẾM CHO PC */}
           <form onSubmit={handleSearch} className="relative">
             <input 
               type="text" 
@@ -72,7 +71,7 @@ export default function Header() {
           {currentUser ? (
             <div className="flex items-center gap-4 border-l pl-6">
               <div className="text-sm text-slate-600">
-                Xin chào, <br/><Link href="/profile" className="font-bold text-slate-800">{currentUser.full_name}</Link>
+                Xin chào, <br/><Link href="/profile" className="font-bold text-slate-800 hover:text-blue-600">{currentUser.full_name}</Link>
               </div>
               
               {(currentUser.role === 'ADMIN' || currentUser.role === 'admin') && (
@@ -97,15 +96,17 @@ export default function Header() {
       {isMobileMenuOpen && (
         <div className="md:hidden bg-white border-t border-gray-100 px-6 py-4 space-y-4 shadow-xl absolute w-full left-0 animate-fade-in">
           
-          {/* 4. Bọc Form cho thanh tìm kiếm Mobile */}
+          {/* THANH TÌM KIẾM CHO ĐIỆN THOẠI */}
           <form onSubmit={handleSearch}>
             <input 
               type="text" 
               placeholder="Tìm kiếm sản phẩm..." 
               value={keyword}
               onChange={(e) => setKeyword(e.target.value)}
-              className="w-full bg-slate-50 border px-4 py-2 rounded-lg outline-none" 
+              className="w-full bg-slate-50 border px-4 py-3 rounded-xl outline-none focus:ring-2 focus:ring-blue-500" 
             />
+            {/* Ẩn nút submit đi, khách bấm Enter (hoặc nút Go trên bàn phím ảo) là tự chạy */}
+            <button type="submit" className="hidden">Tìm</button>
           </form>
           
           <nav className="flex flex-col gap-4 font-semibold text-slate-600">
