@@ -17,7 +17,7 @@ function HomeContent() {
   useEffect(() => {
     fetch('https://vutech-api.onrender.com/v1/products')
       .then(res => res.json())
-      .then(data => { setProducts(data); setLoading(false); })
+      .then(data => { setProducts(data.data || data); setLoading(false); })
       .catch(err => { console.error(err); setLoading(false); });
 
     const userStr = localStorage.getItem('user');
