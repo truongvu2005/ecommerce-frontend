@@ -3,11 +3,12 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import Header from "@/src/components/Header";
 import Footer from "@/src/components/Footer";
+import { Toaster } from 'react-hot-toast'; // <--- MỚI: Import thư viện
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Vũ Tech Shop",
+  title: "Vũ Tech Shop - Thiết bị công nghệ đỉnh cao",
   description: "Cửa hàng công nghệ số 1 Đà Nẵng",
 };
 
@@ -29,6 +30,9 @@ export default function RootLayout({
 
         {/* Chân trang luôn nằm dưới cùng */}
         <Footer />
+        
+        {/* --- MỚI: Đặt loa thông báo ở góc dưới bên phải --- */}
+        <Toaster position="bottom-right" reverseOrder={false} />
       </body>
     </html>
   );
