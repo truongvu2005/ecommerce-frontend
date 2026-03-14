@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 export default function Header() {
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [keyword, setKeyword] = useState(''); // State lưu từ khóa
+  // const [keyword, setKeyword] = useState(''); // State lưu từ khóa
   const router = useRouter();
 
   useEffect(() => {
