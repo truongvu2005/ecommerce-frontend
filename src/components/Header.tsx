@@ -5,7 +5,10 @@ import { useRouter } from 'next/navigation';
 
 export default function Header() {
   const [currentUser, setCurrentUser] = useState<any>(null);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // State quản lý menu điện thoại
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  
+  // 1. Thêm State lưu từ khóa tìm kiếm
+  const [keyword, setKeyword] = useState(''); 
   const router = useRouter();
 
   useEffect(() => {
@@ -22,39 +25,49 @@ export default function Header() {
     router.push('/login');
   };
 
+  // 2. Hàm xử lý khi người dùng bấm Enter hoặc nút Kính lúp
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (keyword.trim()) {
+      router.push(`/products?search=${encodeURIComponent(keyword)}`);
+      setIsMobileMenuOpen(false); // Đóng menu mobile nếu đang mở
+    }
+  };
+
   return (
     <header className="bg-white border-b border-gray-100 sticky top-0 z-50 shadow-sm">
       <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
         
-        {/* Logo */}
         <Link href="/" className="flex items-center gap-3">
           <div className="bg-blue-600 text-white w-10 h-10 rounded-xl flex items-center justify-center font-black text-xl shadow-lg shadow-blue-600/30">V</div>
           <span className="font-black text-2xl tracking-tight text-slate-800">Vũ Tech<span className="text-blue-600">Shop</span></span>
         </Link>
 
-        {/* Nút Hamburger cho Mobile */}
-        <button 
-          className="md:hidden p-2 text-slate-600"
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-        >
+        <button className="md:hidden p-2 text-slate-600" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
           <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={isMobileMenuOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"} />
           </svg>
         </button>
 
-        {/* Menu giữa (Chỉ hiện trên PC) */}
         <nav className="hidden md:flex items-center gap-8 font-semibold text-slate-600">
           <Link href="/" className="hover:text-blue-600 transition">Trang chủ</Link>
           <Link href="/products" className="hover:text-blue-600 transition">Sản phẩm</Link>
           <Link href="/about" className="hover:text-blue-600 transition">Giới thiệu</Link>
         </nav>
 
-        {/* Khu vực Tài khoản (Chỉ hiện trên PC) */}
         <div className="hidden md:flex items-center gap-6">
-          <div className="relative">
-            <input type="text" placeholder="Bạn muốn tìm mua gì?" className="bg-slate-50 border border-transparent focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10 px-5 py-2.5 rounded-full text-sm w-64 transition-all outline-none" />
-            <button className="absolute right-3 top-2.5 text-slate-400 hover:text-blue-600">🔍</button>
-          </div>
+          
+          {/* 3. Bọc Form cho thanh tìm kiếm PC */}
+          <form onSubmit={handleSearch} className="relative">
+            <input 
+              type="text" 
+              placeholder="Bạn muốn tìm mua gì?" 
+              value={keyword}
+              onChange={(e) => setKeyword(e.target.value)}
+              className="bg-slate-50 border border-transparent focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10 px-5 py-2.5 rounded-full text-sm w-64 transition-all outline-none" 
+            />
+            <button type="submit" className="absolute right-3 top-2.5 text-slate-400 hover:text-blue-600">🔍</button>
+          </form>
 
           {currentUser ? (
             <div className="flex items-center gap-4 border-l pl-6">
@@ -68,9 +81,7 @@ export default function Header() {
                 </Link>
               )}
               
-              <Link href="/cart" className="w-10 h-10 bg-slate-50 hover:bg-slate-100 rounded-full flex items-center justify-center text-slate-600 transition relative">
-                🛒
-              </Link>
+              <Link href="/cart" className="w-10 h-10 bg-slate-50 hover:bg-slate-100 rounded-full flex items-center justify-center text-slate-600 transition relative">🛒</Link>
               <Link href="/orders" className="text-sm font-semibold text-slate-600 hover:text-blue-600 transition">Đơn hàng</Link>
               <button onClick={handleLogout} className="text-sm font-bold text-red-500 hover:text-red-700 transition">Đăng xuất</button>
             </div>
@@ -83,10 +94,19 @@ export default function Header() {
         </div>
       </div>
 
-      {/* --- MENU TRƯỢT TRÊN ĐIỆN THOẠI --- */}
       {isMobileMenuOpen && (
         <div className="md:hidden bg-white border-t border-gray-100 px-6 py-4 space-y-4 shadow-xl absolute w-full left-0 animate-fade-in">
-          <input type="text" placeholder="Tìm kiếm sản phẩm..." className="w-full bg-slate-50 border px-4 py-2 rounded-lg outline-none" />
+          
+          {/* 4. Bọc Form cho thanh tìm kiếm Mobile */}
+          <form onSubmit={handleSearch}>
+            <input 
+              type="text" 
+              placeholder="Tìm kiếm sản phẩm..." 
+              value={keyword}
+              onChange={(e) => setKeyword(e.target.value)}
+              className="w-full bg-slate-50 border px-4 py-2 rounded-lg outline-none" 
+            />
+          </form>
           
           <nav className="flex flex-col gap-4 font-semibold text-slate-600">
             <Link href="/" onClick={() => setIsMobileMenuOpen(false)}>Trang chủ</Link>
@@ -98,9 +118,7 @@ export default function Header() {
             {currentUser ? (
               <div className="flex flex-col gap-3">
                 <Link href="/profile" className="text-slate-800 font-bold">Xin chào, {currentUser.full_name}</Link>
-                {currentUser.role === 'ADMIN' || currentUser.role === 'admin' ? (
-                  <Link href="/admin" onClick={() => setIsMobileMenuOpen(false)} className="text-purple-600">⚙️ Quản trị Admin</Link>
-                ) : null}
+                {(currentUser.role === 'ADMIN' || currentUser.role === 'admin') && <Link href="/admin" onClick={() => setIsMobileMenuOpen(false)} className="text-purple-600">⚙️ Quản trị Admin</Link>}
                 <Link href="/cart" onClick={() => setIsMobileMenuOpen(false)}>🛒 Giỏ hàng</Link>
                 <Link href="/orders" onClick={() => setIsMobileMenuOpen(false)}>📦 Đơn hàng của tôi</Link>
                 <button onClick={handleLogout} className="text-left text-red-500 font-bold">Đăng xuất</button>

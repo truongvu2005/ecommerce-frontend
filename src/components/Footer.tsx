@@ -25,8 +25,8 @@ export default function Footer() {
           <h3 className="text-white font-bold text-lg mb-4">Liên hệ</h3>
           <ul className="space-y-3 text-slate-400">
             <li>📍 123 Đường Công Nghệ, Đà Nẵng</li>
-            <li>📞 Hotline: 0123.456.789</li>
-            <li>✉️ Email: contact@vutech.com</li>
+            <li>📞 Hotline: 0362313700</li>
+            <li>✉️ Email: vutruong67893@gmail.com</li>
           </ul>
         </div>
       </div>

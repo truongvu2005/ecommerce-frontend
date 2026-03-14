@@ -17,6 +17,9 @@ export default function ProductsPage() {
   const [currentUser, setCurrentUser] = useState<any>(null);
   const router = useRouter();
 
+  const searchParams = useSearchParams();
+  const searchQuery = searchParams.get('search') || '';
+  
   useEffect(() => {
     const userStr = localStorage.getItem('user');
     if (userStr) setCurrentUser(JSON.parse(userStr));
@@ -28,6 +31,26 @@ export default function ProductsPage() {
       .catch(err => console.error('Lỗi load danh mục:', err));
   }, []);
 
+  // Hàm gọi API lấy sản phẩm
+  useEffect(() => {
+    setLoading(true);
+    let url = `https://vutech-api.onrender.com/v1/products?page=${currentPage}&limit=8`;
+    if (selectedCategory) url += `&category=${selectedCategory}`;
+    if (searchQuery) url += `&search=${encodeURIComponent(searchQuery)}`; // Đính kèm từ khóa
+
+    fetch(url)
+      .then(res => res.json())
+      .then(resData => {
+        setProducts(resData.data || []);
+        if (resData.pagination) setTotalPages(resData.pagination.totalPages);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error(err);
+        setLoading(false);
+      });
+  }, [currentPage, selectedCategory, searchQuery]); // Nhớ thêm searchQuery vào mảng dependency
+  
   // Hàm gọi API lấy sản phẩm (chạy lại mỗi khi Page hoặc Category thay đổi)
   useEffect(() => {
     setLoading(true);
