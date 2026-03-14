@@ -178,6 +178,12 @@ export default function CartPage() {
             <div className="space-y-6">
               {cart.items.map((item: any) => (
                 <div key={item.productId} className="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-gray-50 p-4 rounded-2xl border border-gray-100 gap-4">
+                  
+                  {/* --- KHỐI HÌNH ẢNH ĐÃ QUAY TRỞ LẠI --- */}
+                  <div className="w-24 h-24 bg-white rounded-xl flex items-center justify-center p-2 border border-gray-200 shrink-0">
+                    <img src={item.image_url || 'https://via.placeholder.com/100'} alt={item.name} className="w-full h-full object-contain" />
+                  </div>
+
                   <div className="flex-1">
                     <h3 className="font-bold text-slate-800 text-lg line-clamp-2">{item.name}</h3>
                     <p className="text-slate-500 mt-1">Đơn giá: {Number(item.unitPrice).toLocaleString('vi-VN')} đ</p>
@@ -208,7 +214,7 @@ export default function CartPage() {
                       <p className="text-blue-600 font-black text-lg block">{Number(item.subTotal).toLocaleString('vi-VN')} đ</p>
                     </div>
 
-                    <button onClick={() => handleRemoveItem(item.productId)} className="text-red-500 hover:text-red-700 hover:bg-red-50 p-3 rounded-xl transition-colors font-bold text-sm bg-white border border-red-100">
+                    <button onClick={() => handleRemoveItem(item.productId)} className="text-red-500 hover:text-red-700 hover:bg-red-50 p-3 rounded-xl transition-colors font-bold text-sm bg-white border border-red-100 shadow-sm">
                       ❌
                     </button>
                   </div>
