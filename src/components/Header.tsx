@@ -59,7 +59,7 @@ export default function Header() {
           {currentUser ? (
             <div className="flex items-center gap-4 border-l pl-6">
               <div className="text-sm text-slate-600">
-                Xin chào, <br/><span className="font-bold text-slate-800">{currentUser.full_name}</span>
+                Xin chào, <br/><Link href="/profile" className="font-bold text-slate-800">{currentUser.full_name}</Link>
               </div>
               
               {(currentUser.role === 'ADMIN' || currentUser.role === 'admin') && (
@@ -98,7 +98,9 @@ export default function Header() {
             {currentUser ? (
               <div className="flex flex-col gap-3">
                 <Link href="/profile" className="text-slate-800 font-bold">Xin chào, {currentUser.full_name}</Link>
-                {currentUser.role === 'ADMIN' && <Link href="/admin" onClick={() => setIsMobileMenuOpen(false)} className="text-purple-600">⚙️ Quản trị Admin</Link>}
+                {currentUser.role === 'ADMIN' || currentUser.role === 'admin' ? (
+                  <Link href="/admin" onClick={() => setIsMobileMenuOpen(false)} className="text-purple-600">⚙️ Quản trị Admin</Link>
+                ) : null}
                 <Link href="/cart" onClick={() => setIsMobileMenuOpen(false)}>🛒 Giỏ hàng</Link>
                 <Link href="/orders" onClick={() => setIsMobileMenuOpen(false)}>📦 Đơn hàng của tôi</Link>
                 <button onClick={handleLogout} className="text-left text-red-500 font-bold">Đăng xuất</button>
