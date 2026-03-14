@@ -66,7 +66,7 @@ function HomeContent() {
             <span className="bg-white/20 px-3 py-1 rounded-full text-sm font-bold tracking-wide uppercase mb-4 inline-block backdrop-blur-sm">✨ Khai trương giảm giá 50%</span>
             <h1 className="text-4xl md:text-5xl font-black mb-6 leading-tight">Nâng tầm góc máy <br/> của bạn ngay hôm nay.</h1>
             <p className="text-blue-100 text-lg mb-8 leading-relaxed">Khám phá bộ sưu tập thiết bị công nghệ đỉnh cao từ Vũ Tech. Chất lượng tuyệt đối, giao hàng hỏa tốc trong 2 giờ.</p>
-            <button className="bg-white text-blue-700 px-8 py-4 rounded-full font-black hover:bg-blue-50 transition shadow-lg hover:shadow-xl active:scale-95">MUA SẮM NGAY</button>
+            <button onClick={() => router.push('/products')} className="bg-white text-blue-700 px-8 py-4 rounded-full font-black hover:bg-blue-50 transition shadow-lg hover:shadow-xl active:scale-95">MUA SẮM NGAY</button>
           </div>
           <div className="absolute -right-20 -top-40 w-96 h-96 bg-white/10 rounded-full blur-3xl"></div>
         </div>
