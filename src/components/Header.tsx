@@ -97,7 +97,7 @@ export default function Header() {
           <div className="border-t pt-4">
             {currentUser ? (
               <div className="flex flex-col gap-3">
-                <span className="text-slate-800 font-bold">Xin chào, {currentUser.full_name}</span>
+                <Link href="/profile" className="text-slate-800 font-bold">Xin chào, {currentUser.full_name}</Link>
                 {currentUser.role === 'ADMIN' && <Link href="/admin" onClick={() => setIsMobileMenuOpen(false)} className="text-purple-600">⚙️ Quản trị Admin</Link>}
                 <Link href="/cart" onClick={() => setIsMobileMenuOpen(false)}>🛒 Giỏ hàng</Link>
                 <Link href="/orders" onClick={() => setIsMobileMenuOpen(false)}>📦 Đơn hàng của tôi</Link>
