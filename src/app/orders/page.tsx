@@ -103,9 +103,9 @@ export default function OrdersPage() {
                 <span className="text-2xl font-black text-red-600">
                   {Number(order.total_amount).toLocaleString('vi-VN')} đ
                 </span>
-                <button className="mt-2 text-blue-600 text-sm font-bold hover:underline bg-blue-50 px-4 py-2 rounded-lg transition-colors hover:bg-blue-100 w-full md:w-auto text-center">
+                <Link href={`/orders/${order.id}`} className="mt-2 text-blue-600 text-sm font-bold hover:underline bg-blue-50 px-4 py-2 rounded-lg transition-colors hover:bg-blue-100 w-full md:w-auto text-center block">
                   Xem chi tiết
-                </button>
+                </Link>
               </div>
 
             </div>
